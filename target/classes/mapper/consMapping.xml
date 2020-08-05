@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper:根标签，namespace：命名空间，随便写，一般保证命名空间唯一 -->
+<mapper namespace="com.fh.dao.ConsDao">
+
+
+    <update id="updateByCheck">
+        update t_detai set isCheck = 1 where id=#{m};
+    </update>
+    <update id="updateByChecked">
+        update t_detai set isCheck = 0 where id = #{id} ;
+    </update>
+</mapper>
