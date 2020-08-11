@@ -25,4 +25,6 @@ public interface ConsService {
     Integer selectCode(String orderId) throws Exception;
 
     Map selectgetCode(String orderId) throws Exception;
+
+    String getZhiFuBaoFrom(String orderId);
 }

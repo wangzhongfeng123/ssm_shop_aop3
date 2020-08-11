@@ -35,6 +35,13 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- 支付宝支付sdk工具包 -->
+    <dependency>
+      <groupId>com.alipay.sdk</groupId>
+      <artifactId>alipay-sdk-java</artifactId>
+      <version>3.7.110.ALL</version>
+    </dependency>
+
     <!-- 阿里云的短信服务-->
     <dependency>
       <groupId>com.aliyun</groupId>

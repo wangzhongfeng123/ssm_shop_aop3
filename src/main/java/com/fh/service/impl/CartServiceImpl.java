@@ -47,17 +47,17 @@ public class CartServiceImpl implements CartService {
         String vipName = vip.getVipName();
         String hget = RedisUse.hget("cart_shop" + vipName, cart.getShopId() + "");
         if (StringUtils.isEmpty(hget)){
-            cart.setCheck(true);
-            cart.setCount(cart.getCount());
-            cart.setPhotograph(shop.getPhotograph());
-            cart.setPrice(BigDecimal.valueOf(shop.getPrice()));
-            cart.setShopName(shop.getShopName());
-            BigDecimal bigDecimal = new BigDecimal(cart.getCount());
-            BigDecimal multiply = bigDecimal.multiply(new BigDecimal(shop.getPrice()));
-            cart.setMoney(multiply);
-            cart.setShopId(shop.getShopId());
-            String string = JSONObject.toJSONString(cart);
-            RedisUse.hset("cart_shop" + vipName, cart.getShopId()+"",string);
+                cart.setCheck(true);
+                cart.setCount(cart.getCount());
+                cart.setPhotograph(shop.getPhotograph());
+                cart.setPrice(BigDecimal.valueOf(shop.getPrice()));
+                cart.setShopName(shop.getShopName());
+                BigDecimal bigDecimal = new BigDecimal(cart.getCount());
+                BigDecimal multiply = bigDecimal.multiply(new BigDecimal(shop.getPrice()));
+                cart.setMoney(multiply);
+                cart.setShopId(shop.getShopId());
+                String string = JSONObject.toJSONString(cart);
+                RedisUse.hset("cart_shop" + vipName, cart.getShopId()+"",string);
         }else{
             Cart cart1 = JSONObject.parseObject(hget, Cart.class);
             cart1.setCount(cart1.getCount()+cart.getCount());
@@ -153,14 +153,50 @@ public class CartServiceImpl implements CartService {
     public void updateChecked(String str ,Integer shopId) {
         Vip vip = (Vip) request.getAttribute("login_user");
         String vipName = vip.getVipName();
-        String hget = RedisUse.hget("cart_shop" + vipName, shopId+"");
-        Cart cart1 = JSONObject.parseObject(hget, Cart.class);
-        if (cart1.isCheck()==true){
-            cart1.setCheck(false);
-        }else if (cart1.isCheck()==false){
-            cart1.setCheck(true);
+        long hlen = RedisUse.hlen("cart_shop" + vipName);
+        if (str!=null && str!=""){
+            String[] split = str.split(",");
+            int count = 0;
+            Cart cart =null;
+            for (int i = 0; i <split.length ; i++) {
+                Integer id = Integer.valueOf(split[i]);
+                String hget = RedisUse.hget("cart_shop" + vipName, JSONObject.toJSONString(id));
+                cart = JSONObject.parseObject(hget, Cart.class);
+                if (cart.isCheck()==true){
+                    count++;
+                }
+            }
+            if (hlen!=count){
+                Cart cart1= null;
+                for (int i = 0; i <split.length ; i++) {
+                    Integer id = Integer.valueOf(split[i]);
+                    String hget = RedisUse.hget("cart_shop" + vipName, JSONObject.toJSONString(id));
+                    cart1 = JSONObject.parseObject(hget, Cart.class);
+                    cart1.setCheck(true);
+                    RedisUse.hset("cart_shop" + vipName,cart1.getShopId()+"",JSONObject.toJSONString(cart1));
+                }
+            } else {
+                Cart cart2= null;
+                for (int i = 0; i <split.length ; i++) {
+                    Integer ids = Integer.valueOf(split[i]);
+                    String hget = RedisUse.hget("cart_shop" + vipName, JSONObject.toJSONString(ids));
+                    cart2 = JSONObject.parseObject(hget, Cart.class);
+                    cart2.setCheck(false);
+                    RedisUse.hset("cart_shop" + vipName,cart2.getShopId()+"",JSONObject.toJSONString(cart2));
+                }
+            }
+        }else{
+            if (shopId!=null){
+                String hget = RedisUse.hget("cart_shop" + vipName, shopId + "");
+                Cart cart = JSONObject.parseObject(hget, Cart.class);
+                if (cart.isCheck()==true){
+                    cart.setCheck(false);
+                }else {
+                    cart.setCheck(true);
+                }
+                RedisUse.hset("cart_shop" + vipName, shopId + "",JSONObject.toJSONString(cart));
+            }
         }
-        RedisUse.hset("cart_shop" + vipName,shopId+"",JSONObject.toJSONString(cart1));
     }
     //
     @Override

@@ -1,11 +1,13 @@
 package com.fh.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alipay.api.AlipayApiException;
 import com.fh.dao.ConsDao;
 import com.fh.intercepter.exception.CountException;
 import com.fh.model.po.Cart;
 import com.fh.model.po.Cons;
 import com.fh.service.ConsService;
+import com.fh.util.AliPayUtil;
 import com.fh.util.JsonData;
 import com.fh.util.RedisUse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,21 @@ public class ConsController {
 
     @Autowired
     private ConsService consService;
+
+
+    //查询支付宝支付状态
+    @RequestMapping("selectZhiFuBaoFrom")
+    public JsonData selectZhiFuBaoFrom(String orderId) throws AlipayApiException {
+        AliPayUtil.queryAliPayStatus(orderId);
+        return JsonData.getJsonSuccess("");
+    }
+
+    //支付宝
+    @RequestMapping("getZhiFuBaoFrom")
+    public JsonData getZhiFuBaoFrom(String orderId){
+        String from = consService.getZhiFuBaoFrom(orderId);
+        return JsonData.getJsonSuccess(from);
+    }
 
 
     //获取支付状态码

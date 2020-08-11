@@ -5,6 +5,7 @@ import com.fh.dao.*;
 import com.fh.intercepter.exception.CountException;
 import com.fh.model.po.*;
 import com.fh.service.ConsService;
+import com.fh.util.AliPayUtil;
 import com.fh.util.PayStatusEnum;
 import com.fh.util.RedisUse;
 import com.fh.util.WeiPay;
@@ -64,6 +65,13 @@ public class ConsServiceImpl implements ConsService {
     }
 
     @Override
+    public String getZhiFuBaoFrom(String orderId) {
+        String s = AliPayUtil.aliPay(orderId);
+        return s;
+    }
+
+    //查询订单状态
+    @Override
     public Integer selectCode(String orderId) throws Exception {
         Map<String, String> map = WeiPay.orderQuery(orderId);
         if("SUCCESS".equalsIgnoreCase(map.get("return_code"))&&"SUCCESS".equalsIgnoreCase(map.get("result_code"))){
@@ -82,7 +90,6 @@ public class ConsServiceImpl implements ConsService {
         }
         return 0;
     }
-
 
     //地区
     @Override
@@ -236,9 +243,7 @@ public class ConsServiceImpl implements ConsService {
         return map;
     }
 
-
-
-
+    //修改数量
     @Override
     public void updateCount(Integer shopId, Integer count) {
         Vip vip = (Vip) request.getAttribute("login_user");

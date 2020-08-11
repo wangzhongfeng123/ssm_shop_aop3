@@ -23,8 +23,12 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
     @Autowired
     private OrderdetailDao orderdetailDao;
+
+
+
 
     @RequestMapping("updateCart1")
     public JsonData updateCart(Integer id){
@@ -94,7 +98,5 @@ public class CartController {
        long hlen =  cartService.addCar(cart);
        return JsonData.getJsonSuccess(hlen);
     }
-
-
 
 }
